@@ -34,6 +34,7 @@ module tt_um_chiplet_jtag #( parameter MAX_COUNT = 24'd10_000_000 ) (
     assign uio_oe[3] = 1'b0;
     assign uio_oe[4] = 1'b1;
     assign uio_oe[5] = 1'b1;
+    uio_out[3:0] = 4'b0;
 
     // blink blink for rest of the bidirectional IO
     wire [1:0] blink_in;
