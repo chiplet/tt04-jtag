@@ -6,9 +6,9 @@ project:
 # If using an HDL, set wokwi_id as 0 and uncomment and list your source files here. 
 # Source files must be in ./src and you must list each source file separately
   source_files:        
-    - tt_um_seven_segment_seconds.v
-    - decoder.v
-  top_module:  "tt_um_seven_segment_seconds"      # put the name of your top module here, make it unique by prepending your github username
+    - tt_um_chiplet_jtag.v
+    - generated_jtag.v
+  top_module:  "tt_um_chiplet_jtag" # put the name of your top module here, make it unique by prepending your github username
 
 # How many tiles your design occupies? A single tile is about 167x108 uM.
   tiles: "1x1"    # Valid values: 1x1, 1x2, 2x2, 4x2 or 8x2
@@ -21,13 +21,15 @@ yaml_version: 4
 #
 # Here is a great example: https://github.com/davidsiaw/tt02-davidsiaw-stackcalc/blob/38c5647f83aad2aec675d566aa3d67b98f0aac81/info.yaml
 documentation: 
-  author:       "Matt Venn"
-  title:        "7 segment seconds"
+  author:       "Verneri Hirvonen"
+  title:        "Poor Person's Boundary Scan"
   language:     "Verilog"
-  description:  "Count up to 10, one second at a time."
+  description:  "JTAG test logic with a 8-bit TDR for 'external' boundary scan"
 
 # Longer description of how the project works. You can use standard markdown format.
   how_it_works: |
+      TODO: Update
+
       Uses a set of registers to divide the clock, and then some combinational logic
       to convert from binary to decimal for the display.
 

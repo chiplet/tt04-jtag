@@ -1,0 +1,31 @@
+syntax_version: 2
+debug: false
+
+ir_width: 3
+has_trstn: true
+id_code:
+  manufacturer_id: 1  # 11 bits
+  part_number: 1      # 16 bits
+  version: 1          #  4 bits
+
+tdrs:
+  - name: boundary_scan
+    ir: 0x01
+    width: 8
+    chain_type: capture_update
+    description: "Not really a spec compliant boundary scan, but using a capture_update TDR as boundary scan cells between fixed user input and output."
+  - name: blink_in
+    ir: 0x02
+    width: 2
+    chain_type: capture
+    description: "Bidirectional pin input ports"
+  - name: blink_out
+    ir: 0x03
+    width: 2
+    chain_type: update
+    description: "Bidirectional pin output ports"
+  - name: blink_dir
+    ir: 0x04
+    width: 2
+    chain_type: capture_update
+    description: "Direction (output enable) of blink pins. High for output. Low for input."
