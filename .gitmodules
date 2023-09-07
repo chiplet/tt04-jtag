@@ -1,3 +1,0 @@
-[submodule "src/JTAG"]
-	path = src/JTAG
-	url = git@gitlab.com:a-core/a-core_chisel/JTAG.git
