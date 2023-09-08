@@ -47,6 +47,10 @@ documentation:
       After reset, the counter should increase by one every second with a 10MHz input clock.
       Experiment by changing the inputs to change the counting speed.
 
+      1. Reset core either through the TRSTn input or through a reset sequence on TMS. The reset sequence is achieved by holding TMS high and cycling TCK at least 5 times.
+      2. Shift in IR value to select appropriate TDR
+      3. Shift bits to TDR to read/write its value.
+
 # A description of what the inputs do (e.g. red button, SPI CLK, SPI MOSI, etc).
   inputs:               
     - compare bit 11

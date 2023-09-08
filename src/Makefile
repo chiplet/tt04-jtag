@@ -9,7 +9,11 @@ TOPLEVEL_LANG ?= verilog
 ifneq ($(GATES),yes)
 
 # this is the only part you should need to modify:
-VERILOG_SOURCES += $(PWD)/tb.v $(PWD)/tt_um_seven_segment_seconds.v $(PWD)/decoder.v
+VERILOG_SOURCES += $(PWD)/tb.v $(PWD)/tt_um_chiplet_jtag.v $(PWD)/generated_jtag.v
+
+# init registers to random values instead of X
+# this is required for proper simulation of TMS reset procedure
+COMPILE_ARGS    += -DRANDOMIZE_REG_INIT
 
 else
 
