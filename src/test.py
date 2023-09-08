@@ -185,23 +185,30 @@ async def test_jtag(dut):
     dut.uio_in[0].value = 0 # TCK = 0
     dut.uio_in[1].value = 0 # TMS = 0
     dut.uio_in[2].value = 0 # TDI = 0
+    dut.uio_in[3].value = 0 # TRSTn = 1
+    await ClockCycles(dut.clk, 50)
 
     # TRSTn reset
-    # dut.uio_in[3].value = 0
-    # await ClockCycles(dut.clk, 10)
-    # dut.uio_in[3].value = 1
-    # await ClockCycles(dut.clk, 100)
-    # assert dut.uio_out[5] == 1
-
-    # drive somewhere else
-    # await jtag_cycle(dut, 1)
-    # await jtag_cycle(dut, 0)
-    # await jtag_cycle(dut, 1)
-    # await jtag_cycle(dut, 0)
-
-    # reset again, now with TMS reset sequence
-    await tms_reset(dut)
+    dut.uio_in[3].value = 0
+    await ClockCycles(dut.clk, 10)
+    dut.uio_in[3].value = 1
+    await ClockCycles(dut.clk, 100)
     assert dut.uio_out[5] == 1
+    await ClockCycles(dut.clk, 100)
+
+    """
+    TMS reset doesn't play nice with post synthesis simulation because this design
+    lacks an explicit reset. The state register of the JTAG test logic powers up in
+    a random state and is driven to Test-Logic Reset by holding TMS high while toggling TCK.
+    Unfortunately, the simulator initializes registers to X which stay as X if no explicit
+    reset is used. When simulating the Chisel generated source this is not a problem because,
+    the registers can be init to random values by setting the `DRANDOMIZE_REG_INIT` flag.
+    However, this does not exist for the standard cells so we need to stick to using TRSTn
+    to make the simulation test pass in the CI.
+    """
+    # # reset again, now with TMS reset sequence
+    # await tms_reset(dut)
+    # assert dut.uio_out[5] == 1
 
     await reset_to_idle(dut)
 

@@ -65,7 +65,7 @@ module tt_um_chiplet_jtag #( parameter MAX_COUNT = 24'd10_000_000 ) (
         .tapio_TCK                (TCK),
         .tapio_TMS                (TMS),
         .tapio_TDI                (TDI),
-        .tapio_TRSTn              (TRSTn),
+        .tapio_TRSTn              (!TRSTn),
         .tapio_TDO_data           (TDO),
         // .tapio_TDO_driven         (),
         .tdrio_in_1               (ui_in),      // fixed user inputs capture
