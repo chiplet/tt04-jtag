@@ -60,7 +60,7 @@ documentation:
       - blink_dir IR=0x04 = blink pin directions, high = output, low = input
       ```
 
-      For example, to assign blinky pin 1 high and blinky pin 2 low, execute the following sequence:
+      For example, to assign blink[0] high and blinky[1] low, execute the following sequence:
       ```
       1. Shift 0x04 to IR to select blink_dir TDR
       2. Shift 0b11 to the selected TDR to set both pins as outputs
