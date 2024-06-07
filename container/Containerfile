@@ -1,0 +1,58 @@
+# FROM ubuntu:23.10
+FROM ubuntu:24.04
+
+# Install common utilities from distribution package repository
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    zsh curl wget git git-lfs vim htop pkg-config build-essential gawk zip \
+    openssl libssl-dev openjdk-17-jdk
+
+# Install sbt (scala build tool)
+RUN echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | tee /etc/apt/sources.list.d/sbt.list \
+    && echo "deb https://repo.scala-sbt.org/scalasbt/debian /" | tee /etc/apt/sources.list.d/sbt_old.list \
+    && curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | apt-key add \
+    && apt-get update \
+    && apt-get install sbt
+
+# Install third-party EDA tools
+RUN mkdir /prog
+
+# oss-cad-suite
+RUN cd /prog \
+    && wget -q https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2024-03-20/oss-cad-suite-linux-x64-20240320.tgz \
+    && tar --no-same-owner -xvzf oss-cad-suite-linux-x64-20240320.tgz \
+    && rm -f oss-cad-suite-linux-x64-20240320.tgz
+
+# doesn't get sourced when running in distrobox
+RUN echo "source /prog/oss-cad-suite/environment" >> /root/.bashrc
+
+# Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+    | sh -s -- --default-toolchain stable -y
+
+ENV PATH=/root/.cargo/bin:$PATH
+
+# surfer
+# install binary release
+# RUN wget -q https://gitlab.com/api/v4/projects/42073614/packages/generic/surfer/0.1.0/surfer_linux_0.1.0.zip \
+#     && unzip surfer_linux_0.1.0.zip \
+#     && rm -f surfer_linux_0.1.0.zip \
+#     && mv surfer /bin
+
+# compile from source (not ideal due to large rust build directory)
+RUN cargo install --git https://gitlab.com/surfer-project/surfer surfer
+
+# vscode
+RUN apt-get install wget gpg \
+    && wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg \
+    && install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg \
+    && echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | tee /etc/apt/sources.list.d/vscode.list > /dev/null \
+    && rm -f packages.microsoft.gpg
+# `apt-get install code` or `apt-get install code-insiders`
+RUN apt-get install -y apt-transport-https \
+    && apt-get update \
+    && apt-get -y install code
+
+# python
+RUN apt-get install -y pipenv
+
+ENTRYPOINT [ "/bin/zsh" ]
